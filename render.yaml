@@ -1,11 +1,11 @@
-# Render Blueprint — https://render.com/docs/blueprint-spec
+# Render Blueprint — use when this repo root IS the backend (no backend/ subfolder)
+# https://render.com/docs/blueprint-spec
 services:
   - type: web
     name: siu-graduate-api
     runtime: java
     region: oregon
     plan: free
-    rootDir: backend
     buildCommand: mvn clean package -DskipTests
     startCommand: java -Dspring.profiles.active=prod -jar target/Graduate_Project.jar
     healthCheckPath: /api/health

@@ -1,7 +1,24 @@
 # Local secrets — never commit
 .env
+.env.*
+!.env.example
 .env.local
 .env.*.local
 
-# Build output
+# Build & dependencies
 target/
+*.log
+
+# IDE & OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Keys & credentials
+*.pem
+*.key
+*.p12
+*.jks
+credentials.json
+secrets.json
