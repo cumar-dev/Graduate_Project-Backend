@@ -1,0 +1,299 @@
+{
+  "info": {
+    "name": "Graduate Project Management API",
+    "description": "Test the Graduate Project Management System with Postman.\n\n**Setup:**\n1. Run the app: `mvn spring-boot:run`\n2. Import this collection\n3. Login first (Student/Supervisor/Admin) — Postman saves the session cookie automatically\n4. Call other endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:9090"
+    },
+    {
+      "key": "projectId",
+      "value": ""
+    },
+    {
+      "key": "supervisorId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Test Student\",\n  \"email\": \"teststudent@university.edu\",\n  \"password\": \"student123\",\n  \"department\": \"Computer Science\",\n  \"studentId\": \"CS2024999\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/register"
+          }
+        },
+        {
+          "name": "Login - Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Login successful', () => pm.response.to.have.status(200));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@university.edu\",\n  \"password\": \"student123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login - Supervisor",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"supervisor@university.edu\",\n  \"password\": \"super123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login - Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@university.edu\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Get Current User (me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/auth/me"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/auth/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Student",
+      "item": [
+        {
+          "name": "List Supervisors",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/supervisors"
+          }
+        },
+        {
+          "name": "Create Project Proposal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const json = pm.response.json();",
+                  "    pm.collectionVariables.set('projectId', json.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Smart Library Management System\",\n  \"description\": \"A web-based system for managing university library resources and student borrowing.\",\n  \"techStack\": \"Java, Spring Boot, React, PostgreSQL\",\n  \"startDate\": \"2026-09-01\",\n  \"endDate\": \"2027-05-30\",\n  \"noOfStudents\": 2,\n  \"supervisorName\": \"Dr. Sarah Johnson\",\n  \"phone\": \"+1-555-0101\",\n  \"email\": \"supervisor@university.edu\",\n  \"year\": 2026\n}"
+            },
+            "url": "{{baseUrl}}/api/student/projects"
+          }
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Smart Library Management System (Updated)\",\n  \"description\": \"Updated description for the library management project.\",\n  \"techStack\": \"Java, Spring Boot, React, PostgreSQL, Docker\",\n  \"startDate\": \"2026-09-01\",\n  \"endDate\": \"2027-06-15\",\n  \"noOfStudents\": 3,\n  \"supervisorName\": \"Dr. Sarah Johnson\",\n  \"phone\": \"+1-555-0101\",\n  \"email\": \"supervisor@university.edu\",\n  \"year\": 2026\n}"
+            },
+            "url": "{{baseUrl}}/api/student/projects/{{projectId}}"
+          }
+        },
+        {
+          "name": "Submit Project for Approval",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/student/projects/{{projectId}}/submit"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects (All Roles)",
+      "item": [
+        {
+          "name": "List My Projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/projects"
+          }
+        },
+        {
+          "name": "Get Project by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/projects/{{projectId}}"
+          }
+        },
+        {
+          "name": "Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/projects/stats"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Supervisor",
+      "item": [
+        {
+          "name": "List Pending Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/supervisor/projects/pending"
+          }
+        },
+        {
+          "name": "Start Review",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/supervisor/projects/{{projectId}}/review"
+          }
+        },
+        {
+          "name": "Approve Project",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/supervisor/projects/{{projectId}}/approve"
+          }
+        },
+        {
+          "name": "Reject Project",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/supervisor/projects/{{projectId}}/reject"
+          }
+        },
+        {
+          "name": "Mark In Progress",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/supervisor/projects/{{projectId}}/start"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "System Activity",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/admin/activity"
+          }
+        },
+        {
+          "name": "List All Projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/admin/projects"
+          }
+        },
+        {
+          "name": "Assign Supervisor",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supervisorId\": \"{{supervisorId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/admin/projects/{{projectId}}/assign-supervisor"
+          }
+        },
+        {
+          "name": "Update Project (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supervisorName\": \"Dr. Sarah Johnson\",\n  \"phone\": \"+1-555-0101\",\n  \"email\": \"supervisor@university.edu\",\n  \"status\": \"IN_PROGRESS\",\n  \"year\": 2026\n}"
+            },
+            "url": "{{baseUrl}}/api/admin/projects/{{projectId}}"
+          }
+        }
+      ]
+    }
+  ]
+}
