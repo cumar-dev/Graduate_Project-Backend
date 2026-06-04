@@ -15,19 +15,23 @@ mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/graduate_project?retryWri
 
 ## 2. Render — Web Service
 
+Render’s UI often **does not list Java**. Use **Docker** instead (this repo includes a `Dockerfile`).
+
 1. [dashboard.render.com](https://dashboard.render.com) → **New** → **Web Service**.
-2. Connect your **backend** GitHub repository.
+2. Connect your **backend** GitHub repository (`Graduate_Project-Backend`).
 3. Settings:
 
 | Setting | Value |
 |---------|--------|
-| **Root Directory** | *(leave empty — repo root is backend)* |
-| **Runtime** | Java |
-| **Build Command** | `mvn clean package -DskipTests` |
-| **Start Command** | `java -Dspring.profiles.active=prod -jar target/Graduate_Project.jar` |
+| **Root Directory** | *(leave empty)* |
+| **Language / Runtime** | **Docker** (not Node, not Python) |
+| **Dockerfile Path** | `Dockerfile` (default at repo root) |
+| **Build & Start commands** | *(leave empty — Docker handles both)* |
 | **Health Check Path** | `/api/health` |
 
-Or use **Blueprint** and import `render.yaml` from this repo.
+Or use **Blueprint** → import `render.yaml` from this repo.
+
+> **Do not** pick Node/Python/Ruby — Spring Boot needs **Docker** on Render.
 
 ## 3. Environment variables (Render → Environment)
 
